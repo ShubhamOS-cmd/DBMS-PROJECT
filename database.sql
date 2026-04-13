@@ -1,16 +1,5 @@
--- ============================================================
--- Book Tracker Database - DBMS College Project
--- MySQL 8.0+
--- ============================================================
-
--- Drop existing database and recreate
-DROP DATABASE IF EXISTS book_tracker;
 CREATE DATABASE book_tracker CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE book_tracker;
-
--- ============================================================
--- TABLE: users
--- ============================================================
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     user_id     INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,9 +11,8 @@ CREATE TABLE users (
     reading_goal INT         DEFAULT 12
 );
 
--- ============================================================
 -- TABLE: books
--- ============================================================
+
 DROP TABLE IF EXISTS books;
 CREATE TABLE books (
     book_id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,9 +27,8 @@ CREATE TABLE books (
     cover_color      VARCHAR(20)  DEFAULT 'indigo'
 );
 
--- ============================================================
 -- TABLE: reading_list
--- ============================================================
+
 DROP TABLE IF EXISTS reading_list;
 CREATE TABLE reading_list (
     list_id    INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,9 +44,8 @@ CREATE TABLE reading_list (
     CONSTRAINT fk_rl_book FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
--- ============================================================
 -- TABLE: reviews
--- ============================================================
+
 DROP TABLE IF EXISTS reviews;
 CREATE TABLE reviews (
     review_id  INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,9 +59,8 @@ CREATE TABLE reviews (
     CONSTRAINT fk_rev_book FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
--- ============================================================
 -- TABLE: reading_sessions
--- ============================================================
+
 DROP TABLE IF EXISTS reading_sessions;
 CREATE TABLE reading_sessions (
     session_id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,9 +73,8 @@ CREATE TABLE reading_sessions (
     CONSTRAINT fk_ses_book FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
--- ============================================================
 -- TABLE: favorites
--- ============================================================
+
 DROP TABLE IF EXISTS favorites;
 CREATE TABLE favorites (
     fav_id   INT AUTO_INCREMENT PRIMARY KEY,
@@ -102,9 +86,8 @@ CREATE TABLE favorites (
     CONSTRAINT fk_fav_book FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
--- ============================================================
 -- VIEW: book_stats
--- ============================================================
+
 CREATE OR REPLACE VIEW book_stats AS
 SELECT
     b.book_id,
@@ -125,9 +108,8 @@ LEFT JOIN reviews r      ON b.book_id = r.book_id
 LEFT JOIN reading_list rl ON b.book_id = rl.book_id
 GROUP BY b.book_id;
 
--- ============================================================
 -- VIEW: user_stats
--- ============================================================
+
 CREATE OR REPLACE VIEW user_stats AS
 SELECT
     u.user_id,
@@ -144,10 +126,9 @@ LEFT JOIN reading_list rl ON u.user_id = rl.user_id
 LEFT JOIN books b         ON rl.book_id = b.book_id
 GROUP BY u.user_id;
 
--- ============================================================
 -- TRIGGER: after_session_insert
 -- Updates pages_read in reading_list after a new reading session
--- ============================================================
+
 DELIMITER $$
 
 CREATE TRIGGER after_session_insert
@@ -165,9 +146,8 @@ END$$
 
 DELIMITER ;
 
--- ============================================================
 -- SAMPLE DATA: books (12 books across genres)
--- ============================================================
+
 INSERT INTO books (title, author, genre, total_pages, publisher, publication_year, isbn, description, cover_color) VALUES
 ('The Alchemist',               'Paulo Coelho',          'Fiction',      197,  'HarperOne',              1988, '9780062315007', 'A young Andalusian shepherd named Santiago travels from his homeland in Spain to the Egyptian desert in search of a treasure buried near the Pyramids. The story of the treasures Santiago finds along the way teaches us, as only a few stories can, about the essential wisdom of listening to our hearts, learning to read the omens strewn along life''s path, and, above all, following our dreams.',                                           'amber'),
 ('Atomic Habits',               'James Clear',           'Self-Help',    320,  'Avery',                  2018, '9780735211292', 'No matter your goals, Atomic Habits offers a proven framework for improving every day. James Clear, one of the world''s leading experts on habit formation, reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.',                                                                                                                    'emerald'),
@@ -182,17 +162,15 @@ INSERT INTO books (title, author, genre, total_pages, publisher, publication_yea
 ('The Hobbit',                  'J.R.R. Tolkien',        'Fantasy',      310,  'George Allen & Unwin',   1937, '9780547928227', 'Bilbo Baggins is a hobbit who enjoys a comfortable, unambitious life, rarely travelling further than the pantry of his hobbit-hole in Bag End. But his contentment is disturbed when the wizard Gandalf and a company of thirteen dwarves arrive on his doorstep one day to whisk him away on an unexpected journey there and back again, to help the dwarves reclaim their mountain home.',                            'lime'),
 ('Ikigai: The Japanese Secret to a Long and Happy Life', 'Héctor García', 'Spirituality', 208, 'Penguin Life', 2016, '9780143130727', 'What is your reason for being? In this book, the authors bring us to the Japanese island of Okinawa, home to the largest population of centenarians in the world, to help us find our own ikigai. It is the Japanese word for "a reason to live" or "a reason to jump out of bed in the morning."', 'pink');
 
--- ============================================================
 -- SAMPLE DATA: users (bcrypt hash of 'password123', rounds=10)
--- ============================================================
+
 INSERT INTO users (username, email, password, full_name, joined_date, reading_goal) VALUES
 ('arjun_reads',  'arjun@example.com',  '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Arjun Sharma',   '2024-01-15', 20),
 ('priya_books',  'priya@example.com',  '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Priya Patel',    '2024-02-20', 15),
 ('rahul_reader', 'rahul@example.com',  '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Rahul Verma',   '2024-03-10', 12);
 
--- ============================================================
 -- SAMPLE DATA: reading_list
--- ============================================================
+
 INSERT INTO reading_list (user_id, book_id, status, pages_read, start_date, finish_date, date_added) VALUES
 -- Arjun
 (1, 1,  'completed',        197, '2024-01-20', '2024-01-28', '2024-01-20 09:00:00'),
@@ -216,9 +194,8 @@ INSERT INTO reading_list (user_id, book_id, status, pages_read, start_date, fini
 (3, 3,  'want_to_read',      0,  NULL,          NULL,         '2024-04-16 12:00:00'),
 (3, 10, 'want_to_read',      0,  NULL,          NULL,         '2024-04-17 14:00:00');
 
--- ============================================================
 -- SAMPLE DATA: reviews
--- ============================================================
+
 INSERT INTO reviews (user_id, book_id, rating, review_text, created_at) VALUES
 (1, 1, 5, 'An absolutely magical journey. Paulo Coelho weaves philosophy into an adventure story so seamlessly. I found myself highlighting almost every page. The message about following your Personal Legend resonated deeply with me as a student.', '2024-01-29 10:00:00'),
 (1, 2, 5, 'This book changed how I think about habits. The 1% improvement concept is so simple yet so powerful. I have already implemented the habit stacking technique and it is working wonders for my study routine. Highly recommend!',          '2024-02-16 09:00:00'),
@@ -230,9 +207,8 @@ INSERT INTO reviews (user_id, book_id, rating, review_text, created_at) VALUES
 (3, 6, 5, 'To Kill a Mockingbird is literature at its finest. Harper Lee tackles racism, justice, and childhood innocence with such grace. Atticus Finch remains one of fiction''s greatest moral heroes. Every student should read this.',          '2024-04-06 09:00:00'),
 (3, 8, 4, 'Rich Dad Poor Dad fundamentally changed how I look at assets versus liabilities. Kiyosaki''s storytelling approach makes financial education engaging. Some concepts feel dated but the core philosophy is solid and empowering.',         '2024-04-15 11:00:00');
 
--- ============================================================
 -- SAMPLE DATA: reading_sessions
--- ============================================================
+
 INSERT INTO reading_sessions (user_id, book_id, pages_this_session, session_date, notes) VALUES
 -- Arjun reading sessions (Harry Potter - in progress)
 (1, 4, 50,  '2024-04-01', 'Started today! Entered the wizarding world.'),
@@ -246,9 +222,8 @@ INSERT INTO reading_sessions (user_id, book_id, pages_this_session, session_date
 (3, 2, 100, '2024-04-15', 'The habit loop explanation is crystal clear.'),
 (3, 2, 100, '2024-04-17', 'Implementation intentions chapter was eye-opening.');
 
--- ============================================================
 -- SAMPLE DATA: favorites
--- ============================================================
+
 INSERT INTO favorites (user_id, book_id, added_at) VALUES
 (1, 1,  '2024-01-29 10:30:00'),
 (1, 2,  '2024-02-16 09:30:00'),
@@ -260,4 +235,4 @@ INSERT INTO favorites (user_id, book_id, added_at) VALUES
 (3, 6,  '2024-04-06 09:30:00'),
 (3, 2,  '2024-04-15 11:30:00');
 
-select * from users;
+select * from reading_list;

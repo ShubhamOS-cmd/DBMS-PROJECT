@@ -14,7 +14,7 @@ const pool = mysql.createPool({
   connectionLimit:    10,
   queueLimit:         0,
 });
-
+console.log(pool);
 // Test database connectivity by running a lightweight query
 export async function testConnection() {
   await pool.query('SELECT 1');

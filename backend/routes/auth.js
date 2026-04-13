@@ -1,4 +1,3 @@
-// Authentication routes — handles user registration and login
 import express  from 'express';
 import bcrypt   from 'bcryptjs';
 import jwt      from 'jsonwebtoken';
