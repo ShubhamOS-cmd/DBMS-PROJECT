@@ -235,4 +235,4 @@ INSERT INTO favorites (user_id, book_id, added_at) VALUES
 (3, 6,  '2024-04-06 09:30:00'),
 (3, 2,  '2024-04-15 11:30:00');
 
-select * from reading_list;
+select * from users;
